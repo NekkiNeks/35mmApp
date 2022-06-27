@@ -4,9 +4,9 @@
   "description": "backend for 35mm app",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon --exec ts-node app.ts",
-    "startts": "ts-node app.ts"
+    "client": "npm start --prefix client",
+    "dev": "concurrently --kill-others-on-fail \"npm start\" \"npm run client\" "
   },
   "author": "NekkiNeks",
   "license": "ISC",

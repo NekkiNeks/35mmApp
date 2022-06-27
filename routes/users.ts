@@ -6,10 +6,26 @@ import { Client } from "pg";
 const client = new Client(dbconfig);
 client.connect();
 
+//types
+import type User from "../@types/User";
+
 router
   .route("/:id")
-  .get((req, res) => {
-    getUser(req.params.id).then((responce) => res.send(responce));
+  .get(async (req, res) => {
+    try {
+      const user = await getUser(req.params.id);
+      if (!user) {
+        return res
+          .status(400)
+          .send({ status: "error", data: { message: "cant find user" } });
+      }
+      res.send({ status: "success", data: { user } });
+    } catch (error) {
+      if (error instanceof Error)
+        res
+          .status(500)
+          .send({ status: "error", data: { message: "something went wrong" } });
+    }
   })
   .put((req, res) => {
     const id = req.params.id;
@@ -18,8 +34,9 @@ router
 
 router
   .route("/:id/following")
-  .get((req, res) => {
-    getFollowing(req.params.id).then((responce) => res.send(responce));
+  .get(async (req, res) => {
+    const following = await getFollowing(req.params.id);
+    res.send({ status: "success", data: { following } });
   })
   .post((req, res) => {
     const id = req.params.id;
@@ -30,13 +47,15 @@ router
     res.send(`${id} unsubscribe from user`);
   });
 
-router.get("/:id/followers", (req, res) => {
-  getFollowers(req.params.id).then((responce) => res.send(responce));
+router.get("/:id/followers", async (req, res) => {
+  const followers = getFollowers(req.params.id);
+
+  res.send({ status: "success", data: { followers } });
 });
 
 async function getUser(id: string) {
   const res = await client.query(`SELECT * FROM users WHERE id = ${id};`);
-  const data = res.rows[0];
+  const data: User | undefined = res.rows[0];
   return data;
 }
 

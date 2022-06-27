@@ -11,8 +11,8 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 //routes
-app.use("/users/", require("./routes/users.ts"));
-app.use("/auth/", require("./routes/auth.ts"));
+app.use("/api/users", require("./routes/users.ts"));
+app.use("/api/auth", require("./routes/auth.ts"));
 
 app.get("/", (req, res) => {
   res.send("homepage");

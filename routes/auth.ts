@@ -10,6 +10,9 @@ import { Client } from "pg";
 const client = new Client(dbconfig);
 client.connect();
 
+// types
+import type User from "../@types/User";
+
 router.post(
   "/register",
   [
@@ -30,7 +33,7 @@ router.post(
       });
     }
     try {
-      const { login, password } = req.body;
+      const { login, password }: { login: string; password: string } = req.body;
       const userExist = await checkUserExist(login);
       if (userExist) {
         return res
@@ -74,6 +77,12 @@ router.post(
           .send({ status: "error", data: { message: "user doesnt exist" } });
       }
       const user = await getUser(login);
+      if (!user) {
+        return res.status(500).send({
+          status: "error",
+          data: { message: "cant find user" },
+        });
+      }
       if (user.password !== password) {
         return res
           .status(400)
@@ -93,7 +102,7 @@ router.post(
   }
 );
 
-async function checkUserExist(login: string) {
+async function checkUserExist(login: string): Promise<boolean> {
   const res = await client.query(
     `SELECT login FROM users WHERE login = '${login}'`
   );
@@ -108,19 +117,23 @@ async function createUser(login: string, password: string) {
     };
     await client.query(query);
   } catch (err) {
-    if (err instanceof Error) {
-      throw new Error(err.message);
-    }
+    throw new Error("Error: cant create user");
   }
 }
 
 async function getUser(login: string) {
-  const res = await client.query(
-    `SELECT * FROM users WHERE login = '${login}'`
-  );
-  const user = res.rows[0] || null;
-  console.log(user);
-  return user;
+  try {
+    const res = await client.query(
+      `SELECT * FROM users WHERE login = '${login}'`
+    );
+    if (!res.rows[0]) {
+      throw new Error();
+    }
+    const user: User = res.rows[0];
+    return user;
+  } catch (error) {
+    throw new Error("Error: cant find user");
+  }
 }
 
 module.exports = router;
