@@ -1,7 +1,7 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const cors = require("cors");
-const bodyParser = require("body-parser");
+import cors from "cors";
+import bodyParser from "body-parser";
 
 // variables
 const PORT = 4000;
@@ -11,8 +11,8 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 //routes
-app.use("/users/", require("./routes/users"));
-app.use("/auth/", require("./routes/auth"));
+app.use("/users/", require("./routes/users.ts"));
+app.use("/auth/", require("./routes/auth.ts"));
 
 app.get("/", (req, res) => {
   res.send("homepage");

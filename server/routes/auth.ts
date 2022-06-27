@@ -1,12 +1,12 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const { check, validationResult } = require("express-validator");
-const jwt = require("jsonwebtoken");
-const { jwtSecret } = require("../config");
+import { check, validationResult } from "express-validator";
+import jwt from "jsonwebtoken";
+const { jwtSecret } = require("../config").default;
 
 // postgres connect
-const { dbconfig } = require("../config");
-const { Client } = require("pg");
+const { dbconfig } = require("../config").default;
+import { Client } from "pg";
 const client = new Client(dbconfig);
 client.connect();
 
@@ -18,7 +18,7 @@ router.post(
       min: 6,
     }),
   ],
-  async (req, res) => {
+  async (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).send({
@@ -42,7 +42,8 @@ router.post(
         .status(201)
         .send({ status: "success", data: { message: "User was created" } });
     } catch (error) {
-      res.status(500).send({ status: error, message: error.message });
+      if (error instanceof Error)
+        res.status(500).send({ status: error, message: error.message });
     }
   }
 );
@@ -53,7 +54,7 @@ router.post(
     check("login", "please enter login").notEmpty(),
     check("password", "please enter password").notEmpty(),
   ],
-  async (req, res) => {
+  async (req: express.Request, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).send({
@@ -84,19 +85,22 @@ router.post(
       });
       res.send({ status: "success", data: { jwt: token } });
     } catch (error) {
-      res.status(500).send({ status: error, data: { message: error.message } });
+      if (error instanceof Error)
+        res
+          .status(500)
+          .send({ status: error, data: { message: error.message } });
     }
   }
 );
 
-async function checkUserExist(login) {
+async function checkUserExist(login: string) {
   const res = await client.query(
     `SELECT login FROM users WHERE login = '${login}'`
   );
   return res.rows.length > 0;
 }
 
-async function createUser(login, password) {
+async function createUser(login: string, password: string) {
   try {
     const query = {
       text: "INSERT INTO users (login, password) VALUES ($1, $2)",
@@ -104,11 +108,13 @@ async function createUser(login, password) {
     };
     await client.query(query);
   } catch (err) {
-    throw new Error(err.message);
+    if (err instanceof Error) {
+      throw new Error(err.message);
+    }
   }
 }
 
-async function getUser(login) {
+async function getUser(login: string) {
   const res = await client.query(
     `SELECT * FROM users WHERE login = '${login}'`
   );

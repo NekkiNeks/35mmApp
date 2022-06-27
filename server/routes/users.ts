@@ -1,8 +1,8 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const { dbconfig } = require("../config");
+const { dbconfig } = require("../config").default;
 
-const { Client } = require("pg");
+import { Client } from "pg";
 const client = new Client(dbconfig);
 client.connect();
 
@@ -34,26 +34,26 @@ router.get("/:id/followers", (req, res) => {
   getFollowers(req.params.id).then((responce) => res.send(responce));
 });
 
-async function getUser(id) {
+async function getUser(id: string) {
   const res = await client.query(`SELECT * FROM users WHERE id = ${id};`);
   const data = res.rows[0];
   return data;
 }
 
-async function getFollowing(id) {
+async function getFollowing(id: string) {
   const res = await client.query(
     `SELECT user_follow_id FROM users_follows WHERE user_id = ${id};`
   );
-  const arr = [];
+  const arr: string[] = [];
   res.rows.forEach((item) => arr.push(item.user_follow_id));
   return arr;
 }
 
-async function getFollowers(id) {
+async function getFollowers(id: string) {
   const res = await client.query(
     `SELECT user_id FROM users_follows WHERE user_follow_id = ${id}`
   );
-  const arr = [];
+  const arr: string[] = [];
   res.rows.forEach((item) => arr.push(item.user_id));
   return arr;
 }
