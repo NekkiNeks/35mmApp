@@ -4,8 +4,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import AuthPage from "../pages/AuthPage";
 import UserPage from "../pages/UserPage";
 
-export default function useRoutes(isAuth: boolean) {
-  if (isAuth) {
+export default function useRoutes(isAuthenticated: boolean) {
+  if (isAuthenticated) {
     return (
       <Routes>
         <Route path="/account" element={<UserPage />} />

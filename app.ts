@@ -8,7 +8,8 @@ const PORT = 4000;
 
 // middleware
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
 
 //routes
 app.use("/api/users", require("./routes/users.ts"));
