@@ -1,7 +1,10 @@
 import React from "react";
+import { BrowserRouter } from "react-router-dom";
+import useRoutes from "./hooks/useRoutes";
 
 function App() {
-  return <div className="App">hello</div>;
+  const routes = useRoutes(false);
+  return <BrowserRouter>{routes}</BrowserRouter>;
 }
 
 export default App;
