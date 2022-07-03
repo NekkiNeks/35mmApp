@@ -92,7 +92,7 @@ router.post(
       const token = jwt.sign({ userId: user.id }, jwtSecret, {
         expiresIn: "1h",
       });
-      res.send({ status: "success", data: { jwt: token } });
+      res.send({ status: "success", data: { jwt: token, userId: user.id } });
     } catch (error) {
       if (error instanceof Error)
         res

@@ -9,17 +9,21 @@ export default function AuthPage() {
     password: "",
   });
 
-  const { loading, error, request, clearError } = useHttp();
+  const { loading, error, request, setError } = useHttp();
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    setError("");
     e.preventDefault();
-    clearError();
-    const data = await request("/api/auth/login", "POST", form);
-    console.log(data);
+    try {
+      const data = await request("/api/auth/login", "POST", form);
+      console.log(data);
+    } catch (err) {
+      if (err instanceof Error) setError(err.message);
+    }
   }
 
   return (
@@ -31,12 +35,14 @@ export default function AuthPage() {
           name="login"
           placeholder="login"
           onChange={handleChange}
+          disabled={loading}
         />
         <input
           type="password"
           name="password"
           placeholder="password"
           onChange={handleChange}
+          disabled={loading}
         />
         <button type="submit" disabled={loading}>
           submit

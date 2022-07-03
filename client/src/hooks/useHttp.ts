@@ -4,8 +4,6 @@ export default function useHttp() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  const clearError = () => setError("");
-
   async function request(
     url: string,
     method: string,
@@ -30,5 +28,5 @@ export default function useHttp() {
     }
   }
 
-  return { loading, error, request, clearError };
+  return { loading, error, request, setError };
 }
