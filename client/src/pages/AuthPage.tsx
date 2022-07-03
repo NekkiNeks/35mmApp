@@ -1,14 +1,19 @@
 import React, { FormEvent, useState } from "react";
 import useHttp from "../hooks/useHttp";
+import useAuth from "../hooks/useAuth";
 
-//import components
+//redux
+import { useAppDispatch } from "../hooks/reduxHooks";
+import { authenticate } from "../store/userSlice";
 
 export default function AuthPage() {
+  const dispatch = useAppDispatch();
+
   const [form, setForm] = useState<{ login: string; password: string }>({
     login: "",
     password: "",
   });
-
+  const { login } = useAuth();
   const { loading, error, request, setError } = useHttp();
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -21,6 +26,10 @@ export default function AuthPage() {
     try {
       const data = await request("/api/auth/login", "POST", form);
       console.log(data);
+      if (data) {
+        login(data.jwt, data.userId);
+        dispatch(authenticate({ id: data.userId, token: data.jwt }));
+      }
     } catch (err) {
       if (err instanceof Error) setError(err.message);
     }
