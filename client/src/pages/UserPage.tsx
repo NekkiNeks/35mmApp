@@ -1,5 +1,12 @@
 import React from "react";
+import useAuth from "../hooks/useAuth";
 
 export default function UserPage() {
-  return <div>UserPage</div>;
+  const { logout } = useAuth();
+  return (
+    <div>
+      <p>userpage</p>
+      <button onClick={logout}>logout</button>
+    </div>
+  );
 }

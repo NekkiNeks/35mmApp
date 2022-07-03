@@ -2,13 +2,7 @@ import React, { FormEvent, useState } from "react";
 import useHttp from "../hooks/useHttp";
 import useAuth from "../hooks/useAuth";
 
-//redux
-import { useAppDispatch } from "../hooks/reduxHooks";
-import { authenticate } from "../store/userSlice";
-
 export default function AuthPage() {
-  const dispatch = useAppDispatch();
-
   const [form, setForm] = useState<{ login: string; password: string }>({
     login: "",
     password: "",
@@ -28,7 +22,6 @@ export default function AuthPage() {
       console.log(data);
       if (data) {
         login(data.jwt, data.userId);
-        dispatch(authenticate({ id: data.userId, token: data.jwt }));
       }
     } catch (err) {
       if (err instanceof Error) setError(err.message);
