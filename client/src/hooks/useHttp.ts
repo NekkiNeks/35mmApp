@@ -7,7 +7,7 @@ interface iResponce {
 
 export default function useHttp() {
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
   async function request(
     url: string,

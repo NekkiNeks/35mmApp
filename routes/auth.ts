@@ -40,10 +40,14 @@ router.post(
           .status(409)
           .send({ status: "error", data: { message: "user exists" } });
       }
-      await createUser(login, password);
-      res
-        .status(201)
-        .send({ status: "success", data: { message: "User was created" } });
+      const user = await createUser(login, password);
+      const token = jwt.sign({ userId: user.id }, jwtSecret, {
+        expiresIn: "1h",
+      });
+      res.status(201).send({
+        status: "success",
+        data: { message: "User was created", userId: user.id, jwt: token },
+      });
     } catch (error) {
       if (error instanceof Error)
         res.status(500).send({ status: error, message: error.message });
@@ -112,10 +116,12 @@ async function checkUserExist(login: string): Promise<boolean> {
 async function createUser(login: string, password: string) {
   try {
     const query = {
-      text: "INSERT INTO users (login, password) VALUES ($1, $2)",
+      text: "INSERT INTO users (login, password) VALUES ($1, $2) returning id",
       values: [login, password],
     };
-    await client.query(query);
+    const res = await client.query(query);
+    console.log(res);
+    return { id: res.rows[0].id };
   } catch (err) {
     throw new Error("Error: cant create user");
   }

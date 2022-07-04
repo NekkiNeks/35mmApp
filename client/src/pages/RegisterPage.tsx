@@ -1,28 +1,25 @@
-import React, { FormEvent, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
-//custom hooks
-import useHttp from "../hooks/useHttp";
 import useAuth from "../hooks/useAuth";
+import useHttp from "../hooks/useHttp";
 
-export default function AuthPage() {
+export default function RegisterPage() {
   const [form, setForm] = useState<{ login: string; password: string }>({
     login: "",
     password: "",
   });
-  const { login } = useAuth();
-  const { loading, error, request, setError } = useHttp();
 
+  const { error, loading, request, setError } = useHttp();
+  const { login } = useAuth();
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     setError(null);
     e.preventDefault();
     try {
-      const data = await request("/api/auth/login", "POST", form);
-      console.log(data);
+      const data = await request("/api/auth/register", "POST", form);
       if (data) {
         login(data.jwt, data.userId);
       }
@@ -33,7 +30,7 @@ export default function AuthPage() {
 
   return (
     <div>
-      <h1>Authenification page</h1>
+      <h1>Register new user</h1>
       {error && <p>{error}</p>}
       <form onSubmit={handleSubmit}>
         <input
@@ -53,10 +50,8 @@ export default function AuthPage() {
         <button type="submit" disabled={loading}>
           submit
         </button>
-        <Link to="/register">register</Link>
+        <Link to="/auth">Login</Link>
       </form>
     </div>
   );
 }
-
-//styles
