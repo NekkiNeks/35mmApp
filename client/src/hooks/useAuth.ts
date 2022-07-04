@@ -8,7 +8,6 @@ export default function useAuth() {
   const login = useCallback(
     (token: string, id: string) => {
       dispatch(authUser({ id, token }));
-
       localStorage.setItem("jwtToken", token);
       localStorage.setItem("userId", id);
     },

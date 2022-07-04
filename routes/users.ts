@@ -1,6 +1,7 @@
 import express from "express";
 const router = express.Router();
 import { dbconfig } from "../config";
+import validate from "../middleware/validate";
 
 import { Client } from "pg";
 const client = new Client(dbconfig);

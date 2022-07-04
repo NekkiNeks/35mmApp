@@ -1,8 +1,14 @@
 import { useState } from "react";
+import type User from "../../../@types/User";
 
 interface iResponce {
-  userId: string;
-  jwt: string;
+  status: "success" | "error";
+  data: {
+    message?: string;
+    jwt?: string;
+    userId?: string;
+    user?: User;
+  };
 }
 
 export default function useHttp() {
@@ -12,25 +18,18 @@ export default function useHttp() {
   async function request(
     url: string,
     method: string,
-    body: { login: string; password: string }
-  ): Promise<iResponce | undefined> {
-    try {
-      setLoading(true);
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-      if (data.status === "error") throw new Error(data.data.message);
-      setLoading(false);
-      return data.data;
-    } catch (e) {
-      if (e instanceof Error) {
-        setError(e.message);
-        setLoading(false);
-      }
-    }
+    body?: { login?: string; password?: string },
+    headers?: { authentification?: string }
+  ): Promise<iResponce> {
+    setLoading(true);
+    let res = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json", ...headers },
+      body: JSON.stringify(body),
+    });
+    const data: iResponce = await res.json();
+    setLoading(false);
+    return data;
   }
 
   return { loading, error, request, setError };

@@ -6,11 +6,11 @@ interface customRequest extends express.Request {
   user: string | JwtPayload;
 }
 
-module.exports = (
+export default function validate(
   req: customRequest,
   res: express.Response,
   next: express.NextFunction
-) => {
+) {
   if (req.method === "OPTIONS") next();
 
   try {
@@ -21,6 +21,7 @@ module.exports = (
 
     const decoded = jwt.verify(token, jwtSecret);
     req.user = decoded;
+    return next();
   } catch (err) {
     if (err instanceof Error) {
       res
@@ -28,4 +29,4 @@ module.exports = (
         .send({ status: "error", data: { message: "no web token" } });
     }
   }
-};
+}

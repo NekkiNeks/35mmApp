@@ -18,11 +18,11 @@ export default function RegisterPage() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     setError(null);
     e.preventDefault();
+
     try {
-      const data = await request("/api/auth/register", "POST", form);
-      if (data) {
-        login(data.jwt, data.userId);
-      }
+      const res = await request("/api/auth/login", "POST", form);
+      if (res.status === "error") throw new Error(res.data.message);
+      if (res.data.jwt && res.data.userId) login(res.data.jwt, res.data.userId);
     } catch (err) {
       if (err instanceof Error) setError(err.message);
     }
