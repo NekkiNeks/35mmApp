@@ -2,10 +2,10 @@ import express from "express";
 const router = express.Router();
 import { check, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
-const { jwtSecret } = require("../config").default;
+import { jwtSecret } from "../config";
 
 // postgres connect
-const { dbconfig } = require("../config").default;
+import { dbconfig } from "../config";
 import { Client } from "pg";
 const client = new Client(dbconfig);
 client.connect();

@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-const { dbconfig } = require("../config").default;
+import { dbconfig } from "../config";
 
 import { Client } from "pg";
 const client = new Client(dbconfig);
