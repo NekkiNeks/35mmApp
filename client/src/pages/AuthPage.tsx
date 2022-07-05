@@ -21,7 +21,7 @@ export default function AuthPage() {
     setError(null);
     e.preventDefault();
     try {
-      const res = await request("/api/auth/login", "POST", form);
+      const res = await request("/api/auth/login", "POST", {}, form);
       if (res.status === "error") throw new Error(res.data.message);
       if (res.data.jwt && res.data.userId) login(res.data.jwt, res.data.userId);
     } catch (err) {
@@ -56,4 +56,3 @@ export default function AuthPage() {
     </div>
   );
 }
-

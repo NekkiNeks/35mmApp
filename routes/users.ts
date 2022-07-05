@@ -10,6 +10,8 @@ client.connect();
 //types
 import type User from "../@types/User";
 
+router.use(validate);
+
 router
   .route("/:id")
   .get(async (req, res) => {

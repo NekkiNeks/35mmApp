@@ -18,8 +18,8 @@ export default function useHttp() {
   async function request(
     url: string,
     method: string,
-    body?: { login?: string; password?: string },
-    headers?: { authentification?: string }
+    headers?: { authorization?: string },
+    body?: { login?: string; password?: string } | null
   ): Promise<iResponce> {
     setLoading(true);
     let res = await fetch(url, {
