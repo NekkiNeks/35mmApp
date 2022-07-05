@@ -14,7 +14,7 @@ export default function UserPage() {
 
   const getUserData = useCallback(async () => {
     try {
-      const res = await request(`/api/users/account`, "GET", {
+      const res = await request(`/api/account`, "GET", {
         authorization: `Bearer ${token}`,
       });
       if (res.status === "error") throw new Error(res.data.message);
@@ -24,7 +24,7 @@ export default function UserPage() {
         console.log(err.message);
       }
     }
-  }, [dispatch, request, token]);
+  }, []);
 
   const { logout } = useAuth();
 

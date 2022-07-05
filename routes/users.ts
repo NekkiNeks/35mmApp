@@ -7,38 +7,22 @@ import { Client } from "pg";
 const client = new Client(dbconfig);
 client.connect();
 
-//types
-import type User from "../@types/User";
+//functions
+import { getUser, getFollowing, getFollowers } from "../tools";
 
 router.use(validate);
-
-router.get("/account", async (req, res) => {
-  const userId = res.locals.user.userId;
-  if (!userId) {
-    return res
-      .status(401)
-      .send({ status: "error", data: { message: "no userId" } });
-  }
-  const user = await getUser(userId);
-  res.status(200).send({ status: "success", data: { user } });
-});
 
 router
   .route("/:id")
   .get(async (req, res) => {
     try {
       const user = await getUser(req.params.id);
-      if (!user) {
-        return res
-          .status(400)
-          .send({ status: "error", data: { message: "cant find user" } });
-      }
       res.send({ status: "success", data: { user } });
     } catch (error) {
       if (error instanceof Error)
         res
           .status(500)
-          .send({ status: "error", data: { message: "something went wrong" } });
+          .send({ status: "error", data: { message: error.message } });
     }
   })
   .put((req, res) => {
@@ -66,29 +50,5 @@ router.get("/:id/followers", async (req, res) => {
 
   res.send({ status: "success", data: { followers } });
 });
-
-async function getUser(id: string) {
-  const res = await client.query(`SELECT * FROM users WHERE id = ${id};`);
-  const data: User | undefined = res.rows[0];
-  return data;
-}
-
-async function getFollowing(id: string) {
-  const res = await client.query(
-    `SELECT user_follow_id FROM users_follows WHERE user_id = ${id};`
-  );
-  const arr: string[] = [];
-  res.rows.forEach((item) => arr.push(item.user_follow_id));
-  return arr;
-}
-
-async function getFollowers(id: string) {
-  const res = await client.query(
-    `SELECT user_id FROM users_follows WHERE user_follow_id = ${id}`
-  );
-  const arr: string[] = [];
-  res.rows.forEach((item) => arr.push(item.user_id));
-  return arr;
-}
 
 module.exports = router;
