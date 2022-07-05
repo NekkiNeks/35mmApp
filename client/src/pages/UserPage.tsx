@@ -1,39 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 
 //redux
-import { useAppSelector } from "../hooks/reduxHooks";
-
+import { useAppSelector, useAppDispatch } from "../hooks/reduxHooks";
+import { addUser } from "../store/userSlice";
 //custom hooks
 import useHttp from "../hooks/useHttp";
 
-//types
-import type User from "../../../@types/User";
-
 export default function UserPage() {
-  const { id, token } = useAppSelector((state) => state.user);
-  const [user, setUser] = useState<User | null | undefined>(null);
+  const dispatch = useAppDispatch();
+  const { token, user } = useAppSelector((state) => state.user);
   const { request } = useHttp();
 
-  async function getUserData() {
+  const getUserData = useCallback(async () => {
     try {
-      const res = await request(`/api/users/${id}`, "GET", {
+      const res = await request(`/api/users/account`, "GET", {
         authorization: `Bearer ${token}`,
       });
       if (res.status === "error") throw new Error(res.data.message);
-      setUser(res.data.user);
+      dispatch(addUser({ user: res.data.user! }));
     } catch (err) {
       if (err instanceof Error) {
         console.log(err.message);
       }
     }
-  }
+  }, [dispatch, request, token]);
 
   const { logout } = useAuth();
 
   useEffect(() => {
     getUserData();
-  }, []);
+  }, [getUserData]);
 
   if (user) {
     return (

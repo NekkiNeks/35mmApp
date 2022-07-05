@@ -16,7 +16,6 @@ export default function validate(
     const token = req.headers.authorization.split(" ")[1];
 
     const decoded = jwt.verify(token, jwtSecret);
-    console.log(decoded);
 
     res.locals.user = decoded;
     return next();

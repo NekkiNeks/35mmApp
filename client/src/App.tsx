@@ -6,8 +6,8 @@ import useRoutes from "./hooks/useRoutes";
 import { useAppSelector } from "./hooks/reduxHooks";
 
 function App() {
-  const { token, id } = useAppSelector((state) => state.user);
-  const isAuthenticated = !!token && !!id;
+  const { token } = useAppSelector((state) => state.user);
+  const isAuthenticated = !!token;
   const routes = useRoutes(isAuthenticated);
   return <BrowserRouter>{routes}</BrowserRouter>;
 }

@@ -12,6 +12,17 @@ import type User from "../@types/User";
 
 router.use(validate);
 
+router.get("/account", async (req, res) => {
+  const userId = res.locals.user.userId;
+  if (!userId) {
+    return res
+      .status(401)
+      .send({ status: "error", data: { message: "no userId" } });
+  }
+  const user = await getUser(userId);
+  res.status(200).send({ status: "success", data: { user } });
+});
+
 router
   .route("/:id")
   .get(async (req, res) => {
