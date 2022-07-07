@@ -8,7 +8,7 @@ const client = new Client(dbconfig);
 client.connect();
 
 //functions
-import { getUser, getFollowing, getFollowers } from "../tools";
+import { getUser, getFollowing, getFollowers } from "../libs/tools";
 
 router.use(validate);
 

@@ -3,7 +3,7 @@ const router = express.Router();
 import validate from "../middleware/validate";
 
 // functions
-import { getUser } from "../tools";
+import { getUser, getFollowers, getFollowing } from "../libs/tools";
 
 router.use(validate);
 
@@ -16,6 +16,17 @@ router.get("/", validate, async (req, res) => {
   }
   const user = await getUser(userId);
   res.status(200).send({ status: "success", data: { user } });
+});
+
+router.get("/followers", async (req, res) => {
+  const user = res.locals.user;
+  const followers = await getFollowers(user.id);
+  if (!followers)
+    res.status(500).send({
+      status: "error",
+      data: { message: `cant find followers for user ${user.id}` },
+    });
+  res.send({ status: "success", data: { followers } });
 });
 
 module.exports = router;
