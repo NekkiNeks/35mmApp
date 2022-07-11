@@ -15,7 +15,8 @@
 
 - **Node JS** for REST API
 - **Express**
-- **PostgreSQL** for storage data about posts
+- **MongoDB** for storage data about posts
+- **Mongoose** 
 
 ## How it will be look like? 🔜
 
