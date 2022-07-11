@@ -25,6 +25,7 @@ export default function UserPage() {
         console.log(err.message);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const { logout } = useAuth();
