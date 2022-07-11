@@ -6,13 +6,18 @@ import { Client } from "pg";
 const client = new Client(dbconfig);
 client.connect();
 
+//models
+import User from "../models/User";
+
 export async function getUser(id: string) {
-  const res = await client.query(`SELECT * FROM users WHERE id = ${id};`);
-  const user = res.rows[0];
-  if (!user) {
-    throw new Error("cant fint user");
+  try {
+    const user = User.findById(id);
+    return user;
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error(`cant find user ${id}`);
+    }
   }
-  return user;
 }
 
 export async function getFollowing(id: string) {

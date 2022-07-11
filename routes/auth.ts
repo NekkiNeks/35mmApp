@@ -4,14 +4,8 @@ import { check, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import { jwtSecret } from "../config";
 
-// postgres connect
-import { dbconfig } from "../config";
-import { Client } from "pg";
-const client = new Client(dbconfig);
-client.connect();
-
-// types
-import type User from "../@types/User";
+//models
+import User from "../models/User";
 
 router.post(
   "/register",
@@ -107,35 +101,25 @@ router.post(
 );
 
 async function checkUserExist(login: string): Promise<boolean> {
-  const res = await client.query(
-    `SELECT login FROM users WHERE login = '${login}'`
-  );
-  return res.rows.length > 0;
+  const res = await User.findOne({ login });
+  return !!res;
 }
 
 async function createUser(login: string, password: string) {
   try {
-    const query = {
-      text: "INSERT INTO users (login, password) VALUES ($1, $2) returning id",
-      values: [login, password],
-    };
-    const res = await client.query(query);
-    console.log(res);
-    return { id: res.rows[0].id };
+    const user = await User.create({ login, password });
+    return { id: user._id };
   } catch (err) {
+    if (err instanceof Error) {
+      console.log(err.message);
+    }
     throw new Error("Error: cant create user");
   }
 }
 
 async function getUser(login: string) {
   try {
-    const res = await client.query(
-      `SELECT * FROM users WHERE login = '${login}'`
-    );
-    if (!res.rows[0]) {
-      throw new Error();
-    }
-    const user: User = res.rows[0];
+    const user = await User.findOne({ login });
     return user;
   } catch (error) {
     throw new Error("Error: cant find user");
