@@ -39,7 +39,7 @@ export default function UserPage() {
         <img src={user.avatar_url} alt="avatar" />
         <h2>login: {user.login}</h2>
         <p>description: {user.description}</p>
-        <p>id: {user.id}</p>
+        <p>id: {user._id}</p>
         <button onClick={logout}>logout</button>
       </div>
     );

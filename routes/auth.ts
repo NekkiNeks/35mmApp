@@ -4,8 +4,8 @@ import { check, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import { jwtSecret } from "../config";
 
-//models
-import User from "../models/User";
+// functions
+import { checkUserExist, createUser, getUser } from "../libs/tools";
 
 router.post(
   "/register",
@@ -99,31 +99,5 @@ router.post(
     }
   }
 );
-
-async function checkUserExist(login: string): Promise<boolean> {
-  const res = await User.findOne({ login });
-  return !!res;
-}
-
-async function createUser(login: string, password: string) {
-  try {
-    const user = await User.create({ login, password });
-    return { id: user._id };
-  } catch (err) {
-    if (err instanceof Error) {
-      console.log(err.message);
-    }
-    throw new Error("Error: cant create user");
-  }
-}
-
-async function getUser(login: string) {
-  try {
-    const user = await User.findOne({ login });
-    return user;
-  } catch (error) {
-    throw new Error("Error: cant find user");
-  }
-}
 
 module.exports = router;

@@ -26,9 +26,9 @@ async function connectDatabase() {
 connectDatabase();
 
 //routes
-// app.use("/api/users", require("./routes/users.ts"));
+app.use("/api/users", require("./routes/users.ts"));
 app.use("/api/auth", require("./routes/auth.ts"));
-// app.use("/api/account", require("./routes/account.ts"));
+app.use("/api/account", require("./routes/account.ts"));
 
 app.get("/", (req, res) => {
   res.send("homepage");
