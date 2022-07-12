@@ -1,5 +1,6 @@
 //models
 import User from "../models/User";
+import Photo from "../models/Photo";
 
 export async function checkUserExist(login: string): Promise<boolean> {
   const res = await User.findOne({ login });
@@ -45,20 +46,19 @@ export async function getUserById(id: string) {
   }
 }
 
-// export async function getFollowing(id: string) {
-//   const res = await client.query(
-//     `SELECT user_follow_id FROM users_follows WHERE user_id = ${id};`
-//   );
-//   const arr: string[] = [];
-//   res.rows.forEach((item) => arr.push(item.user_follow_id));
-//   return arr;
-// }
-
-// export async function getFollowers(id: string) {
-//   const res = await client.query(
-//     `SELECT user_id FROM users_follows WHERE user_follow_id = ${id}`
-//   );
-//   const arr: string[] = [];
-//   res.rows.forEach((item) => arr.push(item.user_id));
-//   return arr;
-// }
+export async function addPhoto(
+  id: string,
+  options: { name: string; film: string; camera: string }
+) {
+  const photo = await Photo.create({
+    owner: id,
+    camera: options.camera,
+    film: options.film,
+    name: options.name,
+  });
+  const user = await User.updateOne(
+    { _id: id },
+    { $push: { photos: photo._id } }
+  );
+  return user;
+}

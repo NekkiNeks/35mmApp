@@ -5,8 +5,8 @@ interface iUser {
   password: string;
   description?: string;
   avatar_url?: string;
-  follows?: Types.ObjectId;
-  photos?: Types.ObjectId;
+  follows?: Types.ObjectId[];
+  photos?: Types.ObjectId[];
 }
 
 const userSchema = new mongoose.Schema<iUser>(

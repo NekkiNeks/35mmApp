@@ -1,6 +1,7 @@
 import express from "express";
 const app = express();
 import cors from "cors";
+import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import { mongoURI, mongoOptions } from "./config";
 
@@ -10,6 +11,7 @@ const PORT = 4000;
 // middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static("./public"));
 
 async function connectDatabase() {
   try {
@@ -29,9 +31,10 @@ connectDatabase();
 app.use("/api/users", require("./routes/users.ts"));
 app.use("/api/auth", require("./routes/auth.ts"));
 app.use("/api/account", require("./routes/account.ts"));
+app.use("/api/photos", require("./routes/photos.ts"));
 
 app.get("/", (req, res) => {
-  res.send("homepage");
+  res.send("routes: users, auth, account");
 });
 
 app.listen(PORT, () => {
