@@ -6,9 +6,14 @@ import validate from "../middleware/validate";
 import { uploadSingle } from "../middleware/upload";
 
 //functions
-import { addPhoto } from "../libs/tools";
+import { addPhoto, deletePhoto, getAllPhotos } from "../libs/tools";
 
 router.use(validate);
+
+router.get("/", async (req, res) => {
+  const photos = await getAllPhotos();
+  res.send({ status: "success", data: { photos } });
+});
 
 router.post("/upload", uploadSingle, async (req, res) => {
   try {
@@ -28,7 +33,28 @@ router.post("/upload", uploadSingle, async (req, res) => {
     }
   } catch (err) {
     if (err instanceof Error) {
-      res.status(500).send({ status: "error", data: { message: err.message } });
+      res.status(500).send({
+        status: "error",
+        data: { message: err.message },
+      });
+    }
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const responce = await deletePhoto(req.params.id);
+    console.log(responce);
+    res.send({
+      status: "success",
+      data: { message: `photo ${req.params.id} was deleted` },
+    });
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(500).send({
+        status: "error",
+        data: { message: err.message },
+      });
     }
   }
 });

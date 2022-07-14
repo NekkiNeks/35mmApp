@@ -15,8 +15,8 @@ const userSchema = new mongoose.Schema<iUser>(
     password: { type: String, required: true },
     description: { type: String },
     avatar_url: { type: String },
-    follows: { type: [Schema.Types.ObjectId] },
-    photos: { type: [Schema.Types.ObjectId] },
+    follows: { type: [Schema.Types.ObjectId], ref: "User" },
+    photos: { type: [Schema.Types.ObjectId], ref: "Photo" },
   },
   { collection: "users" }
 );

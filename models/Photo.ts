@@ -9,10 +9,10 @@ interface iPhoto {
 
 const userSchema = new mongoose.Schema<iPhoto>(
   {
-    name: String,
-    owner: Schema.Types.ObjectId,
-    camera: String,
-    film: String,
+    name: { type: String },
+    owner: { type: Schema.Types.ObjectId, ref: "User" },
+    camera: { type: String },
+    film: { type: String },
   },
   { collection: "photos" }
 );

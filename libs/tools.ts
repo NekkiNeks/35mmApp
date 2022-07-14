@@ -25,7 +25,9 @@ export async function getUser(
 ) {
   try {
     if (options && options.noPassword) {
-      const user = await User.findOne({ login }).select("-password");
+      const user = await User.findOne({ login })
+        .select("-password")
+        .populate("photos");
       return user;
     }
     const user = await User.findOne({ login });
@@ -37,7 +39,7 @@ export async function getUser(
 
 export async function getUserById(id: string) {
   try {
-    const user = User.findById(id);
+    const user = User.findById(id).populate("photos");
     return user;
   } catch (err) {
     if (err instanceof Error) {
@@ -46,19 +48,30 @@ export async function getUserById(id: string) {
   }
 }
 
+export async function getAllPhotos() {
+  const photos = await Photo.find().populate("owner");
+  return photos;
+}
+
 export async function addPhoto(
-  id: string,
+  userId: string,
   options: { name: string; film: string; camera: string }
 ) {
   const photo = await Photo.create({
-    owner: id,
+    owner: userId,
     camera: options.camera,
     film: options.film,
     name: options.name,
   });
   const user = await User.updateOne(
-    { _id: id },
+    { _id: userId },
     { $push: { photos: photo._id } }
   );
   return user;
+}
+
+export async function deletePhoto(photoId: string) {
+  await Photo.findOneAndDelete({ _id: photoId });
+  const res = await User.updateMany({ $pull: { photos: photoId } });
+  return res;
 }
