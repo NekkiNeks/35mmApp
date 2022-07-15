@@ -2,20 +2,11 @@ import express from "express";
 const router = express.Router();
 import validate from "../middleware/validate";
 
-//functions
-import { getUser } from "../libs/tools";
+//controllers
+import { getUsersController } from "../controllers/users.controller";
 
 router.use(validate);
 
-router.get("/:login", async (req, res) => {
-  const login = req.params.login;
-  try {
-    const user = await getUser(login, { noPassword: true });
-    res.send({
-      status: "success",
-      data: { user: user },
-    });
-  } catch (err) {}
-});
+router.get("/:login", getUsersController);
 
 module.exports = router;

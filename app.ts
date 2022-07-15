@@ -25,7 +25,16 @@ async function connectDatabase() {
   }
 }
 
-connectDatabase();
+async function connect() {
+  mongoose
+    .connect(mongoURI, mongoOptions)
+    .then((res) => console.log("connected to mongoDB"))
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+connect();
 
 //routes
 app.use("/api/users", require("./routes/users.ts"));

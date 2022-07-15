@@ -2,20 +2,11 @@ import express from "express";
 const router = express.Router();
 import validate from "../middleware/validate";
 
-// functions
-import { getUserById } from "../libs/tools";
+//controllers
+import { getAccountController } from "../controllers/account.controller";
 
 router.use(validate);
 
-router.get("/", async (req, res) => {
-  const userId = res.locals.user.userId;
-  if (!userId) {
-    return res
-      .status(401)
-      .send({ status: "error", data: { message: "no userId" } });
-  }
-  const user = await getUserById(userId);
-  res.status(200).send({ status: "success", data: { user } });
-});
+router.get("/", getAccountController);
 
 module.exports = router;
