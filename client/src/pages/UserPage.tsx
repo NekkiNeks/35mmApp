@@ -12,6 +12,7 @@ export default function UserPage() {
   const dispatch = useAppDispatch();
   const { token, user } = useAppSelector((state) => state.user);
   const { request } = useHttp();
+  const { logout } = useAuth();
 
   const getUserData = useCallback(async () => {
     try {
@@ -22,13 +23,14 @@ export default function UserPage() {
       dispatch(addUser({ user: res.data.user! }));
     } catch (err) {
       if (err instanceof Error) {
+        if (err.message === "jwt expired") {
+          logout();
+        }
         console.log(err.message);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const { logout } = useAuth();
 
   useEffect(() => {
     getUserData();

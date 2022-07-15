@@ -28,6 +28,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { authUser, logoutUser, addUser } = userSlice.actions;
+export const { authUser, logoutUser, addUser } = userSlice.actions; 
 
 export default userSlice.reducer;
