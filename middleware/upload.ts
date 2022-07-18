@@ -18,7 +18,7 @@ export function uploadSingle(
 ) {
   const upload = multer({
     storage,
-    limits: { fileSize: 10 },
+    limits: { fileSize: 2000000 },
   }).single("myPhoto");
 
   upload(req, res, function (err) {

@@ -2,14 +2,14 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 //pages
 import AuthPage from "../pages/AuthPage";
-import UserPage from "../pages/UserPage";
+import HomePage from "../pages/HomePage";
 import RegisterPage from "../pages/RegisterPage";
 
 export default function useRoutes(isAuthenticated: boolean) {
   if (isAuthenticated) {
     return (
       <Routes>
-        <Route path="/account" element={<UserPage />} />
+        <Route path="/account" element={<HomePage />} />
         <Route path="*" element={<Navigate to="/account" />} />
       </Routes>
     );
